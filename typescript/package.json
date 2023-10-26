@@ -1,0 +1,23 @@
+{
+  "name": "@bengsfort/engine-test",
+  "packageManager": "yarn@4.0.0",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "lint": "eslint ./src"
+  },
+  "prettier": "@bengsfort/eslint-config/prettier.config.js",
+  "devDependencies": {
+    "@bengsfort/eslint-config": "^1.1.1",
+    "@types/eslint": "^8",
+    "@typescript-eslint/parser": "^6.9.0",
+    "eslint": "^8.52.0",
+    "prettier": "^3.0.3",
+    "typescript": "^5.0.2",
+    "vite": "^4.4.5"
+  }
+}
