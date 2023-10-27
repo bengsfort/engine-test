@@ -8,5 +8,11 @@
     "**/Thumbs.db": true,
     "**/node_modules": true,
   },
-  "[typescript]": {}
+  "eslint.format.enable": true,
+  "editor.codeLens": true,
+  "editor.formatOnSave": false,
+  "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "always",
+  }
 }

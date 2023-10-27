@@ -1,21 +1,16 @@
+import { createWindow } from './rendering/window.ts';
 import './style.css';
 
-import { setupCounter } from './counter.ts';
-import typescriptLogo from './typescript.svg';
+const window = createWindow();
+window.fillStyle = '#f00';
+window.fillRect(0, 0, window.canvas.width, window.canvas.height);
 
-document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
-  <div>
-    <a href="https://www.typescriptlang.org/" target="_blank">
-      <img src="${typescriptLogo}" class="logo vanilla" alt="TypeScript logo" />
-    </a>
-    <h1>Vite + TypeScript</h1>
-    <div class="card">
-      <button id="counter" type="button"></button>
-    </div>
-    <p class="read-the-docs">
-      Click on the Vite and TypeScript logos to learn more
-    </p>
-  </div>
-`;
+window.fillStyle = '#00f';
+window.fillRect(
+  window.canvas.width / 2 / 2 - 32,
+  window.canvas.height / 2 / 2 - 32,
+  64,
+  64,
+);
 
-setupCounter(document.querySelector<HTMLButtonElement>('#counter')!);
+document.body.appendChild(window.canvas);
