@@ -18,9 +18,11 @@ __metadata:
   dependencies:
     "@bengsfort/eslint-config": "npm:^1.1.1"
     "@types/eslint": "npm:^8"
+    "@types/three": "npm:^0"
     "@typescript-eslint/parser": "npm:^6.9.0"
     eslint: "npm:^8.52.0"
     prettier: "npm:^3.0.3"
+    three: "npm:^0.158.0"
     typescript: "npm:^5.0.2"
     vite: "npm:^4.4.5"
   languageName: unknown
@@ -378,6 +380,32 @@ __metadata:
   version: 7.5.4
   resolution: "@types/semver@npm:7.5.4"
   checksum: dee66a71d9f089c118be74b5937d4fef42864d68d9472a3f4f5399b9e3ad74d56a8e155020c846667b9ecf9de78fdb9ea55a53fff5067af28e06779b282b6c40
+  languageName: node
+  linkType: hard
+
+"@types/stats.js@npm:*":
+  version: 0.17.3
+  resolution: "@types/stats.js@npm:0.17.3"
+  checksum: ccccc992c6dfe08fb85049aa3ce44ca7e428db8da4a3edd20298f1c8b72768021fa8bacdfbe8e9735a7552ee5d57f667c6f557050ad2d9a87b699b3566a6177a
+  languageName: node
+  linkType: hard
+
+"@types/three@npm:^0":
+  version: 0.158.2
+  resolution: "@types/three@npm:0.158.2"
+  dependencies:
+    "@types/stats.js": "npm:*"
+    "@types/webxr": "npm:*"
+    fflate: "npm:~0.6.10"
+    meshoptimizer: "npm:~0.18.1"
+  checksum: bd7f85c719c6eef2070cc9df24baa352b8c6674fc09aaad2e64431200a95aa22b9b8bab3a2bdb8f3bc87b2e11962560b5113082cc140bb408447e6c2be70f08f
+  languageName: node
+  linkType: hard
+
+"@types/webxr@npm:*":
+  version: 0.5.8
+  resolution: "@types/webxr@npm:0.5.8"
+  checksum: b6bc6784fd43e06ea73c9079be6bdf881e0c443be11f2b4cd7c60469c5469804e38b92b07e441f5cb5529999ca4f1bf205607d10a5fef5ec15f02f3fced904df
   languageName: node
   linkType: hard
 
@@ -1525,6 +1553,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"fflate@npm:~0.6.10":
+  version: 0.6.10
+  resolution: "fflate@npm:0.6.10"
+  checksum: c452f720e4cb404b300fceb8ef0bdf345f18fbfd3f57f7d0974dce5f5e2ac0e8dd4b6ff4bb7061ae74fd919b9c707172f9dbd44d91149b1137199b8c705768f1
+  languageName: node
+  linkType: hard
+
 "file-entry-cache@npm:^6.0.1":
   version: 6.0.1
   resolution: "file-entry-cache@npm:6.0.1"
@@ -2388,6 +2423,13 @@ __metadata:
   version: 1.4.1
   resolution: "merge2@npm:1.4.1"
   checksum: 254a8a4605b58f450308fc474c82ac9a094848081bf4c06778200207820e5193726dc563a0d2c16468810516a5c97d9d3ea0ca6585d23c58ccfff2403e8dbbeb
+  languageName: node
+  linkType: hard
+
+"meshoptimizer@npm:~0.18.1":
+  version: 0.18.1
+  resolution: "meshoptimizer@npm:0.18.1"
+  checksum: 8a825c58b20b65585e8d00788843929b60c66ba4297e89afaa49f7c51ab9a0f7b9130f90cc9ad1b9b48b3d1bee3beb1bc93608acba0d73e78995c3e6e5ca436b
   languageName: node
   linkType: hard
 
@@ -3366,6 +3408,13 @@ __metadata:
   version: 0.2.0
   resolution: "text-table@npm:0.2.0"
   checksum: 02805740c12851ea5982686810702e2f14369a5f4c5c40a836821e3eefc65ffeec3131ba324692a37608294b0fd8c1e55a2dd571ffed4909822787668ddbee5c
+  languageName: node
+  linkType: hard
+
+"three@npm:^0.158.0":
+  version: 0.158.0
+  resolution: "three@npm:0.158.0"
+  checksum: b75e88f5e213d026f809d515433f6ce36bb2beebb952120700e850ec9f3fd69032c873ecf3455a586c032c72f4b67ee844b4be867016c7346828b4d1b3560014
   languageName: node
   linkType: hard
 

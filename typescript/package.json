@@ -14,10 +14,14 @@
   "devDependencies": {
     "@bengsfort/eslint-config": "^1.1.1",
     "@types/eslint": "^8",
+    "@types/three": "^0",
     "@typescript-eslint/parser": "^6.9.0",
     "eslint": "^8.52.0",
     "prettier": "^3.0.3",
     "typescript": "^5.0.2",
     "vite": "^4.4.5"
+  },
+  "dependencies": {
+    "three": "^0.158.0"
   }
 }

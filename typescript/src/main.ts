@@ -1,16 +1,23 @@
-import { createWindow } from './rendering/window.ts';
+import { GameWindow } from './rendering/window.ts';
 import './style.css';
 
-const window = createWindow();
-window.fillStyle = '#f00';
-window.fillRect(0, 0, window.canvas.width, window.canvas.height);
+(function main() {
+  // Create window and attach it to dom
+  const gameWindow = new GameWindow();
+  document.body.appendChild(gameWindow.canvas);
 
-window.fillStyle = '#00f';
-window.fillRect(
-  window.canvas.width / 2 / 2 - 32,
-  window.canvas.height / 2 / 2 - 32,
-  64,
-  64,
-);
+  // Setup globals
+  ENGINE_RUNNING = true;
 
-document.body.appendChild(window.canvas);
+  // Main loop
+  const loop = (timestamp: number) => {
+    if (ENGINE_RUNNING === false) {
+      requestAnimationFrame(loop);
+      return;
+    }
+
+    console.log('tick', timestamp);
+    requestAnimationFrame(loop);
+  };
+  loop(0);
+})();
