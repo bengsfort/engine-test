@@ -17,7 +17,7 @@ export class GameScene {
   constructor() {
     this.scene = new Scene();
     this.#entityBatchCount = 50;
-    this.#targetEntityCount = 1000;
+    this.#targetEntityCount = 10;
     this.#entities = [];
     this.#createMissingEntities();
   }

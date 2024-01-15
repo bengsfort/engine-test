@@ -4,10 +4,13 @@ import { GameWindow } from './rendering/window.ts';
 import { GameScene } from './scene/game-scene.ts';
 import './style.css';
 import { makeLoggers } from './utils/logging.ts';
+import { PerformanceMonitor } from './utils/performance.ts';
 
 (function main() {
   // Create window and attach it to dom
   const { info } = makeLoggers('Main');
+
+  const perf = new PerformanceMonitor();
   const gameWindow = new GameWindow();
   const game = new GameScene();
   const camera = new PerspectiveCamera(
@@ -28,10 +31,19 @@ import { makeLoggers } from './utils/logging.ts';
       return;
     }
 
+    // Update
+    perf.frameStart();
     // Update input
-    game.update(timestamp); // Update Logic
-    gameWindow.context.clear(); // Render
+    game.update(timestamp);
+    perf.frameEnd();
+
+    // Render
+    perf.renderStart();
+    gameWindow.context.clear();
     gameWindow.context.render(game.scene, camera);
+    perf.renderEnd();
+
+    perf.captureMemory();
   };
 
   // Global handlers
