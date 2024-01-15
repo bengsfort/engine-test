@@ -1,43 +1,16 @@
-// export type RenderingWindow = {
-//   canvas: HTMLCanvasElement;
-//   context: CanvasRenderingContext2D;
-//   pixelRatio: number;
-//   outputWidth: number;
-//   outputHeight: number;
-// };
-
 import { WebGLRenderer } from 'three';
 
-// export const resizeWindow = (
-//   canvas: HTMLCanvasElement,
-//   width: number,
-//   height: number,
-// ): void => {
-//   const { devicePixelRatio } = window;
+import { makeLoggers } from '../utils/logging';
 
-//   canvas.width = width * devicePixelRatio;
-//   canvas.height = height * devicePixelRatio;
-//   canvas.style.width = `${width}px`;
-//   canvas.style.height = `${height}px`;
-// };
-
-// export const createWindow = (): RenderingWindow => {
-//   const { innerWidth, innerHeight, devicePixelRatio } = window;
-
-//   const canvas = document.createElement('canvas') as HTMLCanvasElement;
-//   const context = canvas.getContext('2d') as CanvasRenderingContext2D;
-
-//   resizeWindow(canvas, innerWidth, innerHeight);
-//   context.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
-
-//   return context;
-// };
+const { info } = makeLoggers('GameWindow');
 
 type WindowOpts = {
   width?: number;
   height?: number;
   fullScreen?: boolean;
 };
+
+type SizeChangedHandler = (width: number, height: number) => void;
 
 const DefaultOpts: WindowOpts = {
   fullScreen: true,
@@ -49,6 +22,7 @@ export class GameWindow {
 
   public outputWidth: number;
   public outputHeight: number;
+  public onSizeChanged: SizeChangedHandler;
 
   public constructor(opts: WindowOpts = DefaultOpts) {
     if (!opts.fullScreen && !opts.height && !opts.width) {
@@ -63,6 +37,7 @@ export class GameWindow {
     const context = new WebGLRenderer();
     context.setSize(width, height);
     context.setPixelRatio(devicePixelRatio);
+    context.autoClear = false;
 
     if (opts.fullScreen) {
       window.addEventListener('resize', this.#onWindowSizeChanged);
@@ -72,8 +47,10 @@ export class GameWindow {
     this.canvas = context.domElement;
     this.outputWidth = width;
     this.outputHeight = height;
+    this.onSizeChanged = () => {};
   }
 
+  // @todo - Throttle
   #onWindowSizeChanged = () => {
     const { innerWidth, innerHeight, devicePixelRatio } = window;
 
@@ -81,5 +58,8 @@ export class GameWindow {
     this.context.setPixelRatio(devicePixelRatio);
     this.outputWidth = innerWidth;
     this.outputHeight = innerHeight;
+    info(
+      `Updated render window size to {${innerWidth}, ${innerHeight}}@${devicePixelRatio}`,
+    );
   };
 }
