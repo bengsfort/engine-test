@@ -5,6 +5,7 @@ declare let ENGINE_RUNNING: boolean;
 
 interface Window {
   ENGINE_RUNNING: boolean;
+  PERF_STATS: import('./utils/performance').PerformanceMonitor;
 }
 
 interface Performance {

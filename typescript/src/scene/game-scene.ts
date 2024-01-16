@@ -1,61 +1,69 @@
-import { Scene } from 'three';
+import {
+  DirectionalLight,
+  DoubleSide,
+  Mesh,
+  MeshPhysicalMaterial,
+  PlaneGeometry,
+  Scene,
+  Vector3,
+  MathUtils,
+  Camera,
+} from 'three';
 
-import { randomFromArray } from '../utils/array';
-import { makeLoggers } from '../utils/logging';
+// import { makeLoggers } from '../utils/logging';
 
-import { AnimationTypes, Shape } from './shape';
+// const _ = makeLoggers('GameScene');
 
-const { info } = makeLoggers('GameScene');
+const Vec3Zero = new Vector3(0, 0, 0);
 
 export class GameScene {
   public readonly scene: Scene;
+  public readonly floor: Mesh;
+  public readonly ambientLight: DirectionalLight[];
 
-  #entityBatchCount: number;
-  #targetEntityCount: number;
-  #entities: Shape[] = [];
+  #camera: Camera | null;
 
   constructor() {
     this.scene = new Scene();
-    this.#entityBatchCount = 50;
-    this.#targetEntityCount = 10;
-    this.#entities = [];
-    this.#createMissingEntities();
+    this.floor = this.#createFloor();
+    this.ambientLight = this.#createLights();
+    this.#camera = null;
   }
 
-  public update(timestamp: number): void {
-    const len = this.#entities.length;
-    for (let i = 0; i < len; i++) {
-      this.#entities[i].update(timestamp);
-    }
-
-    this.#createMissingEntities();
+  public update(_timestamp: number): void {
+    //
   }
 
-  #createMissingEntities(): void {
-    const missingEntities = this.#targetEntityCount - this.#entities.length;
-
-    if (missingEntities === 0) {
-      return;
-    }
-
-    const creationCount = Math.min(this.#entityBatchCount, missingEntities);
-    info(`Missing ${missingEntities} entities, spawning ${creationCount}`);
-
-    let entity: Shape;
-    for (let i = 0; i < creationCount; i++) {
-      entity = this.#createEntity();
-      entity.mesh.position.z = Math.random() * 100;
-      entity.mesh.position.x = Math.random() * 10 - 5;
-      entity.mesh.position.y = Math.random() * 5 - 2.5;
-
-      this.#entities.push(entity);
-    }
+  public setCamera(camera: Camera): void {
+    this.#camera = camera;
+    camera.position.set(15, 15, -15);
+    camera.lookAt(Vec3Zero);
   }
 
-  #createEntity(): Shape {
-    const animation = randomFromArray(AnimationTypes);
-    const entity = new Shape(this.scene, animation);
+  #createFloor(): Mesh {
+    const geo = new PlaneGeometry(20, 20);
+    const mat = new MeshPhysicalMaterial({
+      color: 0x0c0032,
+      emissive: 0x4d03f1,
+      side: DoubleSide,
+      flatShading: true,
+    });
+    const floor = new Mesh(geo, mat);
+    floor.rotateX(MathUtils.DEG2RAD * 90);
+    this.scene.add(floor);
+    return floor;
+  }
 
-    return entity;
+  #createLights(): DirectionalLight[] {
+    const lights = [
+      new DirectionalLight(0xffffff, 3),
+      new DirectionalLight(0xffffff, 3),
+      new DirectionalLight(0xffffff, 3),
+    ];
+    lights[0].position.set(0, 200, 0);
+    lights[1].position.set(100, 200, 100);
+    lights[2].position.set(-100, -200, -100);
+    this.scene.add(...lights);
+    return lights;
   }
 }

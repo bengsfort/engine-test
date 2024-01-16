@@ -31,6 +31,10 @@ export class PerformanceMonitor {
   #frameStartTime = 0;
   #renderStartTime = 0;
 
+  public get stats(): IStats {
+    return this.#stats;
+  }
+
   public frameStart(): void {
     this.#frameStartTime = performance.now();
     performance.mark('frame-start');

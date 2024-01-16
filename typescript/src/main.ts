@@ -1,4 +1,4 @@
-import { PerspectiveCamera, Vector3 } from 'three';
+import { PerspectiveCamera } from 'three';
 
 import { GameWindow } from './rendering/window.ts';
 import { GameScene } from './scene/game-scene.ts';
@@ -17,11 +17,11 @@ import { PerformanceMonitor } from './utils/performance.ts';
     50,
     gameWindow.outputWidth / gameWindow.outputHeight,
   );
-  camera.position.z -= 5;
-  camera.lookAt(new Vector3(0, 0, 0));
+  game.setCamera(camera);
 
   // Setup globals
   window.ENGINE_RUNNING = true;
+  window.PERF_STATS = perf;
 
   // Main loop
   const loop = (timestamp: number) => {
@@ -49,6 +49,7 @@ import { PerformanceMonitor } from './utils/performance.ts';
   // Global handlers
   gameWindow.onSizeChanged = (width, height) => {
     camera.aspect = width / height;
+    camera.updateProjectionMatrix();
   };
 
   document.addEventListener('visibilitychange', () => {
