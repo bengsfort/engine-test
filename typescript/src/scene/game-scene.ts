@@ -8,6 +8,8 @@ import {
   Vector3,
   MathUtils,
   Camera,
+  Object3D,
+  BoxGeometry,
 } from 'three';
 
 // import { makeLoggers } from '../utils/logging';
@@ -21,12 +23,14 @@ export class GameScene {
   public readonly floor: Mesh;
   public readonly ambientLight: DirectionalLight[];
 
+  public readonly player: Object3D;
   #camera: Camera | null;
 
   constructor() {
     this.scene = new Scene();
     this.floor = this.#createFloor();
     this.ambientLight = this.#createLights();
+    this.player = this.#createPlayer();
     this.#camera = null;
   }
 
@@ -40,11 +44,22 @@ export class GameScene {
     camera.lookAt(Vec3Zero);
   }
 
+  #createPlayer(): Object3D {
+    const geo = new BoxGeometry(0.25, 1, 0.25);
+    const mat = new MeshPhysicalMaterial({
+      color: 0x4d03f1,
+      side: DoubleSide,
+      flatShading: true,
+    });
+    const player = new Mesh(geo, mat);
+    this.scene.add(player);
+    return player;
+  }
+
   #createFloor(): Mesh {
     const geo = new PlaneGeometry(20, 20);
     const mat = new MeshPhysicalMaterial({
       color: 0x0c0032,
-      emissive: 0x4d03f1,
       side: DoubleSide,
       flatShading: true,
     });
@@ -56,8 +71,8 @@ export class GameScene {
 
   #createLights(): DirectionalLight[] {
     const lights = [
-      new DirectionalLight(0xffffff, 3),
-      new DirectionalLight(0xffffff, 3),
+      new DirectionalLight(0xffffff, 5),
+      new DirectionalLight(0xffffff, 10),
       new DirectionalLight(0xffffff, 3),
     ];
     lights[0].position.set(0, 200, 0);
