@@ -11,6 +11,7 @@ import {
   Object3D,
   BoxGeometry,
 } from 'three';
+import { PlayerMovementSystem } from '../systems/player-movement';
 
 // import { makeLoggers } from '../utils/logging';
 
@@ -25,17 +26,19 @@ export class GameScene {
 
   public readonly player: Object3D;
   #camera: Camera | null;
+  #movementSystem: PlayerMovementSystem;
 
   constructor() {
     this.scene = new Scene();
     this.floor = this.#createFloor();
     this.ambientLight = this.#createLights();
     this.player = this.#createPlayer();
+    this.#movementSystem = new PlayerMovementSystem(this.player);
     this.#camera = null;
   }
 
-  public update(_timestamp: number): void {
-    //
+  public update(timestamp: number): void {
+    this.#movementSystem.update(timestamp);
   }
 
   public setCamera(camera: Camera): void {
