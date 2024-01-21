@@ -11,6 +11,8 @@ import {
   Object3D,
   BoxGeometry,
 } from 'three';
+
+import { InputManager } from '../input/input';
 import { PlayerMovementSystem } from '../systems/player-movement';
 
 // import { makeLoggers } from '../utils/logging';
@@ -28,12 +30,12 @@ export class GameScene {
   #camera: Camera | null;
   #movementSystem: PlayerMovementSystem;
 
-  constructor() {
+  constructor(input: InputManager) {
     this.scene = new Scene();
     this.floor = this.#createFloor();
     this.ambientLight = this.#createLights();
     this.player = this.#createPlayer();
-    this.#movementSystem = new PlayerMovementSystem(this.player);
+    this.#movementSystem = new PlayerMovementSystem(this.player, input);
     this.#camera = null;
   }
 
@@ -43,7 +45,7 @@ export class GameScene {
 
   public setCamera(camera: Camera): void {
     this.#camera = camera;
-    camera.position.set(15, 15, -15);
+    camera.position.set(-15, 25, -15);
     camera.lookAt(Vec3Zero);
   }
 
@@ -55,12 +57,13 @@ export class GameScene {
       flatShading: true,
     });
     const player = new Mesh(geo, mat);
+    player.position.y = 0.5;
     this.scene.add(player);
     return player;
   }
 
   #createFloor(): Mesh {
-    const geo = new PlaneGeometry(20, 20);
+    const geo = new PlaneGeometry(25, 25);
     const mat = new MeshPhysicalMaterial({
       color: 0x0c0032,
       side: DoubleSide,

@@ -61,5 +61,7 @@ export class GameWindow {
     info(
       `Updated render window size to {${innerWidth}, ${innerHeight}}@${devicePixelRatio}`,
     );
+
+    this.onSizeChanged?.(innerWidth, innerHeight);
   };
 }

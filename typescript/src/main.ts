@@ -1,5 +1,6 @@
 import { PerspectiveCamera } from 'three';
 
+import { InputManager } from './input/input.ts';
 import { GameWindow } from './rendering/window.ts';
 import { GameScene } from './scene/game-scene.ts';
 import './style.css';
@@ -11,12 +12,15 @@ import { PerformanceMonitor } from './utils/performance.ts';
   const { info } = makeLoggers('Main');
 
   const perf = new PerformanceMonitor();
+  const input = new InputManager();
   const gameWindow = new GameWindow();
-  const game = new GameScene();
+  const game = new GameScene(input);
   const camera = new PerspectiveCamera(
     50,
     gameWindow.outputWidth / gameWindow.outputHeight,
   );
+
+  input.registerActions();
   game.setCamera(camera);
 
   // Setup globals
@@ -33,7 +37,7 @@ import { PerformanceMonitor } from './utils/performance.ts';
 
     // Update
     perf.frameStart();
-    // Update input
+    // Update input on other platforms
     game.update(timestamp);
     perf.frameEnd();
 
