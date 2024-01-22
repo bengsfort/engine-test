@@ -10,8 +10,14 @@ import {
   Camera,
   Object3D,
   BoxGeometry,
+  Texture,
+  RepeatWrapping,
+  UVMapping,
+  MeshStandardMaterial,
+  Vector2,
 } from 'three';
 
+import { assetRegistry } from '../assets/registry';
 import { InputManager } from '../input/input';
 import { PlayerMovementSystem } from '../systems/player-movement';
 
@@ -20,6 +26,7 @@ import { PlayerMovementSystem } from '../systems/player-movement';
 // const _ = makeLoggers('GameScene');
 
 const Vec3Zero = new Vector3(0, 0, 0);
+const FloorSize = new Vector2(20, 30);
 
 export class GameScene {
   public readonly scene: Scene;
@@ -36,11 +43,16 @@ export class GameScene {
     this.ambientLight = this.#createLights();
     this.player = this.#createPlayer();
     this.#movementSystem = new PlayerMovementSystem(this.player, input);
+    this.#movementSystem.boundaries = FloorSize;
     this.#camera = null;
   }
 
   public update(timestamp: number): void {
     this.#movementSystem.update(timestamp);
+  }
+
+  public fixedUpdate(fixedDelta: number): void {
+    this.#movementSystem.fixedUpdate(fixedDelta);
   }
 
   public setCamera(camera: Camera): void {
@@ -57,17 +69,27 @@ export class GameScene {
       flatShading: true,
     });
     const player = new Mesh(geo, mat);
-    player.position.y = 0.5;
+    player.position.set(0, 0.5, -12);
     this.scene.add(player);
     return player;
   }
 
   #createFloor(): Mesh {
-    const geo = new PlaneGeometry(25, 25);
-    const mat = new MeshPhysicalMaterial({
-      color: 0x0c0032,
+    const geo = new PlaneGeometry(FloorSize.x, FloorSize.y);
+
+    const tex = new Texture(assetRegistry.getTexture('grid'));
+
+    tex.mapping = UVMapping;
+    tex.wrapS = RepeatWrapping;
+    tex.wrapT = RepeatWrapping;
+    tex.repeat = FloorSize.clone();
+    tex.needsUpdate = true;
+
+    const mat = new MeshStandardMaterial({
+      color: 0xfff,
       side: DoubleSide,
-      flatShading: true,
+      flatShading: false,
+      map: tex,
     });
     const floor = new Mesh(geo, mat);
     floor.rotateX(MathUtils.DEG2RAD * 90);

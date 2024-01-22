@@ -1,15 +1,19 @@
 import { PerspectiveCamera } from 'three';
 
-import { InputManager } from './input/input.ts';
-import { GameWindow } from './rendering/window.ts';
-import { GameScene } from './scene/game-scene.ts';
+import { assetRegistry } from './assets/registry';
+import { InputManager } from './input/input';
+import { GameWindow } from './rendering/window';
+import { GameScene } from './scene/game-scene';
 import './style.css';
-import { makeLoggers } from './utils/logging.ts';
-import { PerformanceMonitor } from './utils/performance.ts';
+import { makeLoggers } from './utils/logging';
+import { PerformanceMonitor } from './utils/performance';
 
-(function main() {
+(async function main() {
   // Create window and attach it to dom
   const { info } = makeLoggers('Main');
+
+  await assetRegistry.load();
+  const fixedTimeStep = 1000 / 60;
 
   const perf = new PerformanceMonitor();
   const input = new InputManager();
@@ -19,6 +23,8 @@ import { PerformanceMonitor } from './utils/performance.ts';
     50,
     gameWindow.outputWidth / gameWindow.outputHeight,
   );
+
+  let lastFixedUpdate = 0;
 
   input.registerActions();
   game.setCamera(camera);
@@ -39,6 +45,13 @@ import { PerformanceMonitor } from './utils/performance.ts';
     perf.frameStart();
     // Update input on other platforms
     game.update(timestamp);
+
+    const fixedDelta = timestamp - lastFixedUpdate;
+    if (fixedDelta >= fixedTimeStep) {
+      lastFixedUpdate = timestamp;
+      game.fixedUpdate(fixedDelta);
+    }
+
     perf.frameEnd();
 
     // Render

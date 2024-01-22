@@ -2,8 +2,6 @@ import { Object3D, Vector2, Vector3 } from 'three';
 
 import { InputManager } from '../input/input';
 
-const FIXED_TIME_STEP = 1000 / 60;
-
 interface PhysicsState {
   inputVelocity: Vector2;
   velocity: Vector3;
@@ -17,15 +15,34 @@ export class PlayerMovementSystem {
 
   #player: Object3D;
   #input: InputManager;
+  #boundaries: Vector2 = new Vector2();
+  #range: [Vector3, Vector3] = [
+    new Vector3(-9999, -9999, -9999),
+    new Vector3(9999, 9999, 9999),
+  ];
 
   // @todo: Make time class...
   #prevFrameTime = 0;
-  #prevFixedTime = 0;
   #state: PhysicsState = {
     inputVelocity: new Vector2(),
     velocity: new Vector3(),
     actualPosition: new Vector3(),
   };
+
+  public set boundaries(value: Vector2) {
+    this.#boundaries = value;
+    const [min, max] = this.#range;
+
+    const halfX = value.x / 2;
+    const halfY = value.y / 2;
+
+    min.set(-halfX, this.#player.position.y, -halfY);
+    max.set(halfX, this.#player.position.y, halfY);
+  }
+
+  public get boundaries(): Vector2 {
+    return this.#boundaries;
+  }
 
   constructor(obj: Object3D, input: InputManager) {
     this.#player = obj;
@@ -35,20 +52,18 @@ export class PlayerMovementSystem {
 
   public update(timestamp: number): void {
     const delta = timestamp - this.#prevFrameTime;
-    const fixedDelta = timestamp - this.#prevFixedTime;
-
     this.#prevFrameTime = timestamp;
 
     this.#parseInput();
 
-    if (fixedDelta >= FIXED_TIME_STEP) {
-      this.#prevFixedTime = timestamp;
-      this.#physicsUpdate(fixedDelta);
-      return;
-    }
-
     // Optimistic update
-    this.#player.position.add(this.#state.velocity.clone().divideScalar(delta));
+    const velocity = this.#state.velocity.clone();
+    this.#player.position.add(velocity.divideScalar(delta));
+    this.#restrictMovement();
+  }
+
+  public fixedUpdate(fixedDelta: number): void {
+    this.#physicsUpdate(fixedDelta);
   }
 
   #parseInput() {
@@ -103,6 +118,13 @@ export class PlayerMovementSystem {
 
     // Apply changes against cached position, then update cache
     this.#player.position.copy(this.#state.actualPosition).add(velocity);
+    this.#restrictMovement();
     this.#state.actualPosition.copy(this.#player.position);
+  }
+
+  #restrictMovement(): void {
+    const { position } = this.#player;
+    const [min, max] = this.#range;
+    position.clamp(min, max);
   }
 }
