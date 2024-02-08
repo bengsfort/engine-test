@@ -5,6 +5,9 @@ declare let ENGINE_RUNNING: boolean;
 
 interface Window {
   ENGINE_RUNNING: boolean;
+  PARTICLE_COUNT: number;
+  SPAWNER_COUNT: number;
+  PARTICLE_LIFETIME_SECS: number;
   PERF_STATS: import('./utils/performance').PerformanceMonitor;
 }
 

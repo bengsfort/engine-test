@@ -15,7 +15,14 @@ import { PerformanceMonitor } from './utils/performance';
   await assetRegistry.load();
   const fixedTimeStep = 1000 / 60;
 
-  const perf = new PerformanceMonitor();
+  // Setup globals
+  window.PARTICLE_COUNT = 10;
+  window.PARTICLE_LIFETIME_SECS = 1;
+  window.SPAWNER_COUNT = 10;
+  window.ENGINE_RUNNING = true;
+  window.PERF_STATS = new PerformanceMonitor();
+
+  const perf = window.PERF_STATS;
   const input = new InputManager();
   const gameWindow = new GameWindow();
   const game = new GameScene(input);
@@ -28,10 +35,6 @@ import { PerformanceMonitor } from './utils/performance';
 
   input.registerActions();
   game.setCamera(camera);
-
-  // Setup globals
-  window.ENGINE_RUNNING = true;
-  window.PERF_STATS = perf;
 
   // Main loop
   const loop = (timestamp: number) => {

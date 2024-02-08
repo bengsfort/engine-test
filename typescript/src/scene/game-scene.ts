@@ -21,6 +21,8 @@ import { assetRegistry } from '../assets/registry';
 import { InputManager } from '../input/input';
 import { PlayerMovementSystem } from '../systems/player-movement';
 
+import { ParticleSpawner } from './particle-spawner';
+
 // import { makeLoggers } from '../utils/logging';
 
 // const _ = makeLoggers('GameScene');
@@ -32,6 +34,7 @@ export class GameScene {
   public readonly scene: Scene;
   public readonly floor: Mesh;
   public readonly ambientLight: DirectionalLight[];
+  public readonly spawners: ParticleSpawner[];
 
   public readonly player: Object3D;
   #camera: Camera | null;
@@ -42,6 +45,8 @@ export class GameScene {
     this.floor = this.#createFloor();
     this.ambientLight = this.#createLights();
     this.player = this.#createPlayer();
+    this.spawners = this.#createSpawners();
+
     this.#movementSystem = new PlayerMovementSystem(this.player, input);
     this.#movementSystem.boundaries = FloorSize;
     this.#camera = null;
@@ -49,6 +54,9 @@ export class GameScene {
 
   public update(timestamp: number): void {
     this.#movementSystem.update(timestamp);
+    for (const spawner of this.spawners) {
+      spawner.update(timestamp);
+    }
   }
 
   public fixedUpdate(fixedDelta: number): void {
@@ -59,6 +67,33 @@ export class GameScene {
     this.#camera = camera;
     camera.position.set(-15, 25, -15);
     camera.lookAt(Vec3Zero);
+  }
+
+  #createSpawners(): ParticleSpawner[] {
+    let row = 0;
+
+    const { scene } = this;
+    const gap = 0.5;
+    const spawners: ParticleSpawner[] = [];
+
+    // @todo (Matti): clean up
+    const halfSize = 0.25 * 0.5;
+    const xStart = FloorSize.x * -0.5 - 0.5 + halfSize;
+    const yStart = FloorSize.y * 0.5 - 0.5 + halfSize;
+
+    for (let i = 0; i < window.SPAWNER_COUNT; i++) {
+      const col = i % FloorSize.x;
+      if (col === 0) {
+        row += 1;
+      }
+
+      const obj = new ParticleSpawner();
+      obj.position.set(xStart + col + (gap + 0.25), halfSize, yStart + -row);
+      scene.add(obj);
+      spawners.push(obj);
+    }
+
+    return spawners;
   }
 
   #createPlayer(): Object3D {
